@@ -10,7 +10,7 @@ import math
 fees = 0  # 定义总停车费
 top_cost = 5  # 夜间封顶费用
 per_hours_cost = 2  # 每小时停车费
-day_hours = 14  # 定义无封顶费用的停车时间，22-8总共14小时
+day_hours = 14  # 定义白天时间，22-8总共14小时
 
 # 模拟汽车入场，实际场景是接收从地磁传来的信号？
 admission = bool(input('车辆是否入场（输入任意字符代表入场）：'))
@@ -28,6 +28,7 @@ if admission:
     entry_date = entry_time.date()  # 入场日期
     exit_date = exit_time.date()  # 出场日期
     date_diff = max((exit_date - entry_date).days, 0)
+    print(f'date_diff={date_diff}')
 
     # 定义一个入场临界时间，该时间为车辆入场当天的早上6点
     # 因为在6点之后停车不可能触发夜间封顶费用
@@ -36,16 +37,27 @@ if admission:
 
     # 定义一个入场时间差，用于计算车辆在22:00之前入场时，而产生的停车时间
     # 定义晚上10点，用于计算差值
-    night_time = datetime.datetime.combine(entry_time.date(), datetime.time(hour=22, minute=0, second=0))
-    # 计算时间差
-    entry_diff = (night_time - entry_time).total_seconds() // 3600
-    entry_diff = max(0, entry_diff)  # 如果时间差为负数则视为0
-    entry_diff = math.ceil(entry_diff)  # 向上取整
+    night_time = datetime.datetime.combine(entry_time.date(), datetime.time(hour=22, minute=00, second=00))
+    # 排除22:00之后入场的情况
+    if entry_time >= night_time:
+        entry_diff = 0
+    else:
+        entry_diff = (night_time - entry_time).total_seconds() // 3600
+        entry_diff += 1  # 向上取整
+        entry_diff = min(entry_diff, day_hours)
 
     # 同上，定义一个出场时间差，用于计算车辆出场当天，晚于8点出场而产生的停车时间
-    morning_time = datetime.datetime.combine(exit_time.date(), datetime.time(hour=8, minute=0, second=0))
-    # 计算时间差，步骤合并
-    exit_diff = math.ceil(max(0, (exit_time - morning_time).total_seconds() // 3600))
+    morning_time = datetime.datetime.combine(exit_time.date(), datetime.time(hour=8, minute=00, second=00))
+    # 排除8:00之前出场的情况
+    if exit_time <= morning_time:
+        exit_diff = 0
+    else:
+        exit_diff = (exit_time - morning_time).total_seconds() // 3600
+        exit_diff += 1
+        exit_diff = min(exit_diff, day_hours)  # 时间差不能超过白天时间14个小时
+    print(f'exit_diff={exit_diff}')
+    print(f'entry_diff={entry_diff}')
+
 
     # 计算停车时间
     parking_time = exit_time - entry_time
@@ -76,7 +88,7 @@ if admission:
             fees = hours * per_hours_cost
             print(f'您的停车时间为{days}天{hours}时{minutes}分{seconds}秒，停车费为{fees}元')
 
-    # 判断停车时间是否在早上6点之前
+    # 判断入场时间是否在早上6点之前
     elif entry_time < critical_time:
         # 计算夜间封顶费用
         fees += top_cost * (date_diff + 1)
