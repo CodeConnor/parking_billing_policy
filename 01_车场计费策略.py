@@ -5,7 +5,6 @@
 
 # 导入 datetime和math模块
 import datetime
-import math
 # 定义费用和时间
 fees = 0  # 定义总停车费
 top_cost = 5  # 夜间封顶费用
@@ -21,14 +20,11 @@ if admission:
     entry_time = datetime.datetime.strptime(time_str1, "%Y-%m-%d %H:%M:%S")  # 将输入的字符串解析为日期和时间
     time_str2 = input('请输入出场时间（格式：年-月-日 小时:分钟:秒）：')  # 手动输入车辆出场时间
     exit_time = datetime.datetime.strptime(time_str2, "%Y-%m-%d %H:%M:%S")
-    print(f'入场时间：{entry_time}')
-    print(f'出场时间：{exit_time}')
 
     # 获取车辆的入场日期和出场日期之差
     entry_date = entry_time.date()  # 入场日期
     exit_date = exit_time.date()  # 出场日期
     date_diff = max((exit_date - entry_date).days, 0)
-    print(f'date_diff={date_diff}')
 
     # 定义一个入场临界时间，该时间为车辆入场当天的早上6点
     # 因为在6点之后停车不可能触发夜间封顶费用
@@ -44,7 +40,6 @@ if admission:
     else:
         entry_diff = (night_time - entry_time).total_seconds() // 3600
         entry_diff += 1  # 向上取整
-        entry_diff = min(entry_diff, day_hours)
 
     # 同上，定义一个出场时间差，用于计算车辆出场当天，晚于8点出场而产生的停车时间
     morning_time = datetime.datetime.combine(exit_time.date(), datetime.time(hour=8, minute=00, second=00))
@@ -54,10 +49,6 @@ if admission:
     else:
         exit_diff = (exit_time - morning_time).total_seconds() // 3600
         exit_diff += 1
-        exit_diff = min(exit_diff, day_hours)  # 时间差不能超过白天时间14个小时
-    print(f'exit_diff={exit_diff}')
-    print(f'entry_diff={entry_diff}')
-
 
     # 计算停车时间
     parking_time = exit_time - entry_time
@@ -72,12 +63,12 @@ if admission:
     minutes, seconds = divmod(remainder, 60)
 
     # 判断停车时间是否超过15min，不超过即免费
-    if parking_time <= datetime.timedelta(minutes=15):  # 判断停车时间是否超过15min
+    if parking_time < datetime.timedelta(minutes=15):  # 判断停车时间是否超过15min
         fees = 0
         print(f'您的停车时间为{days}天{hours}时{minutes}分{seconds}秒，停车费为{fees}元')
 
     # 判断停车时间是否超过2小时
-    elif parking_time <= datetime.timedelta(hours=2):
+    elif parking_time < datetime.timedelta(hours=2):
         # 判断是否为整小时，例如1小时0分0秒
         if seconds > 0:
             # 非整小时：费用中的小时数向上取整
@@ -105,7 +96,3 @@ if admission:
 
 else:
     print('入场失败或者暂无汽车入场')
-
-
-
-
