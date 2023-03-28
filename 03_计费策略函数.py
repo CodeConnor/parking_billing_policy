@@ -35,7 +35,7 @@ def  calculate_parking_fee(entry_datetime, exit_datetime):
     if entry_time > night_time:
         entry_diff = 0
     else:
-        entry_diff = (night_time - entry_time).total_seconds() // 3600
+        entry_diff = (night_time - entry_time). total_seconds() // 3600
         entry_diff += 1  # 向上取整
 
     # 同上，定义一个出场时间差，用于计算车辆出场当天，晚于8点出场而产生的停车时间
@@ -45,18 +45,14 @@ def  calculate_parking_fee(entry_datetime, exit_datetime):
         exit_diff = 0
     else:
         exit_diff = (exit_time - morning_time).total_seconds() // 3600
-        # exit_diff += 1
+        exit_diff += 1
 
     # 计算停车时间
     parking_time = exit_time - entry_time
     # 分别获取停车时间的天数，秒数和微秒数
-    days = parking_time.days
     seconds = parking_time.seconds
-    microseconds = parking_time.microseconds
-    # 将秒和微秒数合并为总秒数
-    total_seconds = seconds + microseconds / 1000000
     # 计算小时、分钟和秒数
-    hours, remainder = divmod(total_seconds, 3600)
+    hours, remainder = divmod(seconds, 3600)
     # minutes, seconds = divmod(remainder, 60)
 
     # 判断停车时间是否超过15min，不超过即免费
@@ -66,15 +62,9 @@ def  calculate_parking_fee(entry_datetime, exit_datetime):
 
     # 判断停车时间是否超过2小时
     elif parking_time < datetime.timedelta(hours=2):
-        # 判断是否为整小时，例如1小时0分0秒
-        if seconds > 0:
-            # 非整小时：费用中的小时数向上取整
-            parking_fee = (hours + 1) * rate
-            return parking_fee, parking_time, entry_time, exit_time
-        else:
-            # 整小时：小时数不用向上取整
-            parking_fee = hours * rate
-            return parking_fee, parking_time, entry_time, exit_time
+        parking_fee = (hours + 1) * rate
+        return parking_fee, parking_time, entry_time, exit_time
+
     # 判断入场时间是否在早上6点之前
     elif entry_time < critical_time:
         # 计算夜间封顶费用
@@ -89,7 +79,7 @@ def  calculate_parking_fee(entry_datetime, exit_datetime):
         parking_fee += (entry_diff + exit_diff + day_hours * (date_diff - 1)) * rate
         return parking_fee, parking_time, entry_time, exit_time
 # 通过文件批量导入时间
-with open('D:\\Python\\PycharmProjects\\work_projects\\junior_work\\parking_records.txt', 'r') as f:
+with open('/\\parking_records.txt', 'r') as f:
     # 遍历数据并计算停车费用
     for line in f:
         # 从数据中获取入场和出场时间
