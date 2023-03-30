@@ -1,13 +1,18 @@
-# 车场计费策略，
-# 早8点到晚10点：15分钟免费，每小时2元。
-# 晚10点到早8点：15分钟免费，每小时2元，夜间封顶5元。
-# 根据入场出场时间，输出计费金额
-
 # 导入 datetime模块
 import datetime
 
+
 # 定义停车计费函数
-def  calculate_parking_fee(entry_datetime, exit_datetime):
+def calculate_parking_fee(entry_datetime, exit_datetime):
+    '''
+    该函数是用于计算某停车场的车辆停车费，停车策略如下：
+    早8点到晚10点：15分钟免费，每小时2元。
+    晚10点到早8点：15分钟免费，每小时2元，
+    夜间封顶5元。根据入场出场时间，输出计费金额
+    :param entry_datetime: datetime，参数1，车辆进入停车场的时间
+    :param exit_datetime: datetime，参数2，车辆离开停车场的时间
+    :return: parking_fee：停车费, parking_time：停车时长, entry_time：车辆入场时间, exit_time：车辆出场时间
+    '''
     # 定义费用和时间
     parking_fee = 0  # 定义总停车费
     top_cost = 5  # 夜间封顶费用
@@ -108,6 +113,7 @@ def  calculate_parking_fee(entry_datetime, exit_datetime):
             parking_fee += (entry_diff + exit_diff + day_hours * (date_diff - 1)) * rate
             return parking_fee, parking_time, entry_time, exit_time
 
+
 # 通过文件批量导入时间
 with open('parking_records.txt', 'r') as f:
     # 遍历数据并计算停车费用
@@ -120,6 +126,3 @@ with open('parking_records.txt', 'r') as f:
         print(f'入场时间,出场时间：{entry_time},{exit_time}')
         print('停车时长：', parking_time)
         print('停车费用：', parking_fee)
-
-
-

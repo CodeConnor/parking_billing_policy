@@ -5,6 +5,7 @@
 
 # 导入 datetime模块
 import datetime
+
 # 定义费用和时间
 parking_fee = 0  # 定义总停车费
 top_cost = 5  # 夜间封顶费用
@@ -14,7 +15,7 @@ day_hours = 14  # 定义白天时间，22-8总共14小时
 # 模拟汽车入场，实际场景是接收从地磁传来的信号？
 if True:
     # 获取车辆入场和出场时间
-    time_str = input('请输入车辆入场时间,出场时间（格式：年-月-日 小时:分钟:秒）：')   # 手动输入车辆入场时间
+    time_str = input('请输入车辆入场时间,出场时间（格式：年-月-日 小时:分钟:秒）：')  # 手动输入车辆入场时间
     # 分割时间字符串
     start_time_str, end_time_str = time_str.split(',')
     # 转换时间字符串为datetime对象
@@ -110,11 +111,9 @@ if True:
                 # 整小时：小时数不用向上取整
                 parking_fee = hours * rate
                 print(f'您的停车时间为{days}天{hours}时{minutes}分{seconds}秒，停车费为{parking_fee}元')
-        else: 
+        else:
             # 计算夜间封顶费用
             parking_fee += top_cost * date_diff
             # 停车费公式
             parking_fee += (entry_diff + exit_diff + day_hours * (date_diff - 1)) * rate
             print(f'您的停车时间为{days}天{hours}时{minutes}分{seconds}秒，停车费为{parking_fee}元')
-
-
