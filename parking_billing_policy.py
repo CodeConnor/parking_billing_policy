@@ -114,15 +114,17 @@ def calculate_parking_fee(entry_datetime, exit_datetime):
             return parking_fee, parking_time, entry_time, exit_time
 
 
-# 通过文件批量导入时间
-with open('parking_records.txt', 'r') as f:
-    # 遍历数据并计算停车费用
-    for line in f:
-        # 从数据中获取入场和出场时间
-        entry_datetime, exit_datetime = line.strip().split(',')
-        # 计算停车费用
-        parking_fee, parking_time, entry_time, exit_time = calculate_parking_fee(entry_datetime, exit_datetime)
-        # 输出结果
-        print(f'入场时间,出场时间：{entry_time},{exit_time}')
-        print('停车时长：', parking_time)
-        print('停车费用：', parking_fee)
+# test
+if __name__ == '__main__':
+    # 通过文件批量导入时间
+    with open('parking_records.txt', 'r') as f:
+        # 遍历数据并计算停车费用
+        for line in f:
+            # 从数据中获取入场和出场时间
+            entry_datetime, exit_datetime = line.strip().split(',')
+            # 计算停车费用
+            parking_fee, parking_time, entry_time, exit_time = calculate_parking_fee(entry_datetime, exit_datetime)
+            # 输出结果
+            print(f'入场时间,出场时间：{entry_time},{exit_time}')
+            print('停车时长：', parking_time)
+            print('停车费用：', parking_fee)
